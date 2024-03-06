@@ -18,7 +18,7 @@ import (
 
 const (
 	// pluginName is the unique name of this plugin amongst Target plugins.
-	pluginName = "azure-vmss-simple"
+	pluginName = "target-azure-vmss-simple"
 
 	// configKeys represents the known configuration parameters required at
 	// varying points throughout the plugins lifecycle.

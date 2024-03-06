@@ -42,6 +42,11 @@ builds:
     id: "target-azure-vmss-simple"
     main: "./cmd/target-azure-vmss-simple"
     binary: "target-azure-vmss-simple"
+  - <<: *template
+    skip: false
+    id: "strategy-pid"
+    main: "./cmd/strategy-pid"
+    binary: "strategy-pid"
 
 archives:
   - format: "tar.gz"

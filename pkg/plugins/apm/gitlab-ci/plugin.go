@@ -3,12 +3,14 @@ package gitlab_ci
 import (
 	"context"
 	"fmt"
+	"github.com/Jamesits/nomad-autoscaler-plugins/pkg/utils"
 	"github.com/fatih/structtag"
 	"github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/nomad-autoscaler/plugins/apm"
 	"github.com/hashicorp/nomad-autoscaler/plugins/base"
 	"github.com/hashicorp/nomad-autoscaler/sdk"
 	"github.com/hasura/go-graphql-client"
+	"maps"
 	"net/http"
 	"os"
 	"strconv"
@@ -66,9 +68,7 @@ func (n *APMPlugin) SetConfig(config map[string]string) error {
 
 	n.config = make(map[string]string)
 	// copy from default config
-	for k, v := range defaultConfig {
-		n.config[k] = v
-	}
+	maps.Copy(n.config, defaultConfig)
 	// apply environment variables
 	if os.Getenv("GITLAB_GRAPHQL_ENDPOINT") != "" {
 		n.config["graphql_endpoint"] = os.Getenv("GITLAB_GRAPHQL_ENDPOINT")
@@ -77,9 +77,7 @@ func (n *APMPlugin) SetConfig(config map[string]string) error {
 		n.config["token"] = os.Getenv("GITLAB_TOKEN")
 	}
 	// copy from user config
-	for k, v := range config {
-		n.config[k] = v
-	}
+	maps.Copy(n.config, config)
 
 	// debug print parsed config
 	for k, v := range n.config {
@@ -103,7 +101,7 @@ func (n *APMPlugin) SetConfig(config map[string]string) error {
 	}
 	n.sampleInterval = time.Second * time.Duration(l)
 
-	i, e := splitTags(n.config["tags"])
+	i, e := utils.SplitTags(n.config["tags"])
 	n.includeTags = append(n.includeTags, i...)
 	n.excludeTags = append(n.excludeTags, e...)
 
@@ -138,7 +136,7 @@ func (n *APMPlugin) Query(q string, r sdk.TimeRange) (sdk.TimestampedMetrics, er
 	if tags != nil {
 		tagsValue = tags.Value()
 	}
-	i, e := splitTags(tagsValue)
+	i, e := utils.SplitTags(tagsValue)
 	includeTags := append(n.includeTags, i...)
 	excludeTags := append(n.excludeTags, e...)
 	n.logger.Trace("tags", "include", includeTags, "exclude", excludeTags)
@@ -157,7 +155,7 @@ func (n *APMPlugin) Query(q string, r sdk.TimeRange) (sdk.TimestampedMetrics, er
 		pendingJobs := 0
 		for _, j := range ret.Jobs.Nodes {
 			// tag filter
-			if ((len(includeTags) > 0) && !matchAny(j.Tags, includeTags)) || matchAny(j.Tags, excludeTags) {
+			if ((len(includeTags) > 0) && !utils.MatchAny(j.Tags, includeTags)) || utils.MatchAny(j.Tags, excludeTags) {
 				continue
 			}
 
