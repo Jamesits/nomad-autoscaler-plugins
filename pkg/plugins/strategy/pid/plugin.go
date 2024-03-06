@@ -210,7 +210,7 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	integral := state.integral + proportional*dt
 	derivative := (proportional - state.previousError) / dt
 	rawOutput := state.kp*proportional + state.ki*integral + state.kd*derivative
-	s.logger.Debug("5")
+
 	// save internal state
 	state.integral = integral
 	state.previousError = proportional
@@ -221,7 +221,7 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 		eval.Action.Direction = sdk.ScaleDirectionNone
 		return eval, nil
 	}
-	s.logger.Debug("6")
+
 	// output transformation
 	var tOutput float64
 	// polynomial
@@ -251,7 +251,7 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	}
 
 	eval.Action.Count = tOutputInt
-	eval.Action.Reason = "For science!"
+	eval.Action.Reason = fmt.Sprintf("PID output: %f", rawOutput)
 	if tOutputInt == count {
 		eval.Action.Direction = sdk.ScaleDirectionNone
 	} else if tOutputInt > count {
