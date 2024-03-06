@@ -10,6 +10,8 @@ Changes:
 
 ### Agent Configuration
 
+Assign "Virtual Machine Contributor" role to the agent's identity.
+
 ```hcl
 target "azure-vmss" {
   driver = "target-azure-vmss-simple"
