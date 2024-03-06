@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	// pluginName is the unique name of the this plugin amongst Target plugins.
+	// pluginName is the unique name of this plugin amongst Target plugins.
 	pluginName = "azure-vmss-simple"
 
 	// configKeys represents the known configuration parameters required at
@@ -98,24 +98,16 @@ func (t *TargetPlugin) Scale(action sdk.ScalingAction, config map[string]string)
 
 	capacity := *currVMSS.Sku.Capacity
 
-	// The Azure VMSS target requires different details depending on which
-	// direction we want to scale. Therefore calculate the direction and the
-	// relevant number so we can correctly perform the AWS work.
-	num, direction := t.calculateDirection(capacity, action.Count)
-
-	switch direction {
-	case "in":
-		err = t.scaleIn(ctx, resourceGroup, vmScaleSet, num, config)
-	case "out":
-		err = t.scaleOut(ctx, resourceGroup, vmScaleSet, num)
-	default:
+	if capacity == action.Count {
 		t.logger.Info("scaling not required", "resource_group", resourceGroup, "vmss", vmScaleSet,
 			"current_count", capacity, "strategy_count", action.Count)
 		return nil
 	}
 
+	err = t.scale(ctx, resourceGroup, vmScaleSet, action.Count, config)
+
 	// If we received an error while scaling, format this with an outer message
-	// so its nice for the operators and then return any error to the caller.
+	// so, it's nice for the operators and then return any error to the caller.
 	if err != nil {
 		err = fmt.Errorf("failed to perform scaling action: %v", err)
 	}
@@ -156,17 +148,6 @@ func (t *TargetPlugin) Status(config map[string]string) (*sdk.TargetStatus, erro
 	processInstanceView(instanceView, &resp)
 
 	return &resp, nil
-}
-
-func (t *TargetPlugin) calculateDirection(vmssDesired, strategyDesired int64) (int64, string) {
-
-	if strategyDesired < vmssDesired {
-		return vmssDesired - strategyDesired, "in"
-	}
-	if strategyDesired > vmssDesired {
-		return strategyDesired, "out"
-	}
-	return 0, ""
 }
 
 // processInstanceView updates the status object based on the details within

@@ -35,6 +35,9 @@ var (
 	}
 )
 
+// Test interface compatibility
+var _ apm.APM = (*APMPlugin)(nil)
+
 type APMPlugin struct {
 	logger hclog.Logger
 
