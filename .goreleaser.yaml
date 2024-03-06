@@ -79,6 +79,15 @@ nfpms:
       - "nomad-autoscaler"
     bindir: "/usr/lib/nomad-autoscaler/plugins"
 
+dockers:
+  - id: nomad-autoscaler
+    goos: linux
+    goarch: amd64
+    image_templates:
+      - "localhost/nomad-autoscaler:latest"
+    skip_push: true
+    dockerfile: "Dockerfile.goreleaser"
+
 changelog:
   sort: "asc"
   filters:

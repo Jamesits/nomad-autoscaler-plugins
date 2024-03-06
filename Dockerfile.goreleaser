@@ -1,0 +1,10 @@
+FROM golang:1.20-bookworm AS nomad-autoscaler-builder
+RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.2 \
+    && cd nomad-autoscaler \
+    && go build .
+
+FROM debian:bookworm-slim
+RUN mkdir -p /usr/lib/nomad-autoscaler/plugins
+COPY --from=nomad-autoscaler-builder /go/nomad-autoscaler/nomad-autoscaler /usr/bin/
+COPY . /usr/lib/nomad-autoscaler/plugins/
+CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins" ]
