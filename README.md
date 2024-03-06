@@ -16,4 +16,4 @@ Requirements: `go upx goreleaser`
 
 Building locally: `./build_local.sh`
 
-Launching: `nomad-autoscaler agent -plugin-dir=../nomad-autoscaler-plugins/dist/plugins #...other args...#`
+Launching: `nomad-autoscaler agent -plugin-dir=./dist/plugins #...other args...#`
