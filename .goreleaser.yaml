@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
+
+version: 1
+
+before:
+  hooks:
+    - "go mod verify"
+    - "go generate ./..."
+
+gomod:
+  proxy: true
+
+upx:
+  - enabled: true
+    compress: "1"
+    goos: [linux, windows] # does not work on macOS Sonoma for now
+
+builds:
+  - &template
+    skip: true
+    id: ".template"
+    asmflags:
+      - "all=-trimpath={{ .Env.GOPATH }}"
+    gcflags:
+      - "all=-trimpath={{ .Env.GOPATH }}"
+    ldflags:
+      - "-s"
+      - "-w"
+    env:
+      - "CGO_ENABLED=0"
+    targets:
+      - "go_first_class"
+    mod_timestamp: "{{ .CommitTimestamp }}"
+  - <<: *template
+    skip: false
+    id: "apm-gitlab-ci"
+    main: "./cmd/apm-gitlab-ci"
+    binary: "apm-gitlab-ci"
+  - <<: *template
+    skip: false
+    id: "target-azure-vmss-simple"
+    main: "./cmd/target-azure-vmss-simple"
+    binary: "target-azure-vmss-simple"
+
+archives:
+  - format: "tar.gz"
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: "windows"
+        format: "zip"
+
+nfpms:
+  - id: "default"
+    package_name: "nomad-autoscaler-plugins"
+    vendor: "Jamesits"
+    homepage: "https://github.com/Jamesits/nomad-autoscaler-plugins"
+    maintainer: "Jamesits <osscontrib@ciexyz.net>"
+    description: "Some nomad-autoscaler plugins"
+    license: "Mozilla Public License 2.0"
+    formats:
+      - "apk"
+      - "deb"
+      - "rpm"
+      - "termux.deb"
+      - "archlinux"
+    recommends:
+      - "nomad-autoscaler"
+    bindir: "/usr/lib/nomad-autoscaler/plugins"
+
+changelog:
+  sort: "asc"
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
