@@ -116,34 +116,34 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 	state = &policyState{}
 
 	// parse args
-	state.target, err = strconv.ParseFloat(s.config[runConfigKeyTarget], 64)
+	state.target, err = strconv.ParseFloat(c[runConfigKeyTarget], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyTarget, err)
 	}
 
-	state.kp, err = strconv.ParseFloat(s.config[runConfigKeyKp], 64)
+	state.kp, err = strconv.ParseFloat(c[runConfigKeyKp], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyKp, err)
 	}
 
-	state.ki, err = strconv.ParseFloat(s.config[runConfigKeyKi], 64)
+	state.ki, err = strconv.ParseFloat(c[runConfigKeyKi], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyKi, err)
 	}
 
-	state.kd, err = strconv.ParseFloat(s.config[runConfigKeyKd], 64)
+	state.kd, err = strconv.ParseFloat(c[runConfigKeyKd], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyKd, err)
 	}
 
-	tf, err := strconv.ParseInt(s.config[runConfigKeyTimeDividerNanoSec], 10, 64)
+	tf, err := strconv.ParseInt(c[runConfigKeyTimeDividerNanoSec], 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyTimeDividerNanoSec, err)
 	}
 	state.timeDivider = time.Duration(tf)
 
 	state.countPolynomialCoefficients = make([]float64, 0)
-	for _, v := range strings.Split(s.config[runConfigKeyActionCountPolynomialCoefficients], ",") {
+	for _, v := range strings.Split(c[runConfigKeyActionCountPolynomialCoefficients], ",") {
 		f, err := strconv.ParseFloat(strings.TrimSpace(v), 64)
 		if err != nil {
 			return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyActionCountPolynomialCoefficients, err)
@@ -151,17 +151,17 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 		state.countPolynomialCoefficients = append(state.countPolynomialCoefficients, f)
 	}
 
-	state.countQuantification = strings.ToLower(strings.TrimSpace(s.config[runConfigKeyActionCountQuantification]))
+	state.countQuantification = strings.ToLower(strings.TrimSpace(c[runConfigKeyActionCountQuantification]))
 	if !utils.MatchAny([]string{state.countQuantification}, []string{"floor", "ceil", "ceiling", "round", "round_to_even"}) {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyActionCountQuantification, err)
 	}
 
-	state.countMax, err = strconv.ParseFloat(s.config[runConfigKeyActionCountMax], 64)
+	state.countMax, err = strconv.ParseFloat(c[runConfigKeyActionCountMax], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyActionCountMax, err)
 	}
 
-	state.countMin, err = strconv.ParseFloat(s.config[runConfigKeyActionCountMin], 64)
+	state.countMin, err = strconv.ParseFloat(c[runConfigKeyActionCountMin], 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyActionCountMin, err)
 	}
@@ -170,7 +170,7 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 		return nil, fmt.Errorf("conflict: %s cannot be smaller than %s", runConfigKeyActionCountMax, runConfigKeyActionCountMin)
 	}
 
-	state.countDeadZone, err = strconv.ParseInt(s.config[runConfigKeyActionCountDeadZone], 10, 64)
+	state.countDeadZone, err = strconv.ParseInt(c[runConfigKeyActionCountDeadZone], 10, 64)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse %s: %w", runConfigKeyActionCountDeadZone, err)
 	}
