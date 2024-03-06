@@ -6,7 +6,7 @@ Nomad Autoscaler plugin for reading GitLab CI running/pending job count.
 
 ### Agent Configuration
 
-```hcl2
+```hcl
 apm "gitlab-ci" {
   driver = "apm-gitlab-ci"
   args   = [] # no args supported
@@ -35,7 +35,7 @@ Matching rules:
 
 ### Policy Configuration
 
-```hcl2
+```hcl
 scaling "example" {
   # ...
 

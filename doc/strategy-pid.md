@@ -4,7 +4,7 @@
 
 ### Agent Configuration
 
-```hcl2
+```hcl
 strategy "pid" {
   driver = "strategy-pid"
   args = [] # no args supported
@@ -14,7 +14,7 @@ strategy "pid" {
 
 ### Policy Configuration
 
-```hcl2
+```hcl
 scaling "example" {
   # ...
 

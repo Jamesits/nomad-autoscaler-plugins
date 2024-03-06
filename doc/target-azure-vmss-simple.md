@@ -10,7 +10,7 @@ Changes:
 
 ### Agent Configuration
 
-```hcl2
+```hcl
 target "azure-vmss" {
   driver = "target-azure-vmss-simple"
   config = {
@@ -27,7 +27,7 @@ target "azure-vmss" {
 
 ### Policy Configuration
 
-```hcl2
+```hcl
 scaling "example" {
   # ...
 
