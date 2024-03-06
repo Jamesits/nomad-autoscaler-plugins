@@ -180,7 +180,8 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 }
 
 func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sdk.ScalingCheckEvaluation, error) {
-	s.logger.Debug("Run() called")
+	id := eval.Check.Group + "/" + eval.Check.Name
+	s.logger.Debug("Run() called", "id", id)
 	eval.Action.Direction = sdk.ScaleDirectionNone
 
 	if len(eval.Metrics) == 0 {
@@ -194,7 +195,6 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 		return eval, nil
 	}
 
-	id := eval.Check.Group + "/" + eval.Check.Name
 	state, err := s.newPolicy(id, eval.Check.Strategy.Config)
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse strategy config: %w", err)
@@ -217,8 +217,8 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	state.previousTime = measured.Timestamp
 	// ignore the first sample
 	if !state.hasPreviousData {
+		s.logger.Info("first time here, not generating policies")
 		state.hasPreviousData = true
-		eval.Action.Direction = sdk.ScaleDirectionNone
 		return eval, nil
 	}
 
@@ -226,7 +226,7 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	var tOutput float64
 	// polynomial
 	for p, k := range state.countPolynomialCoefficients {
-		tOutput += k * math.Pow(tOutput, float64(p))
+		tOutput += k * math.Pow(rawOutput, float64(p))
 	}
 	// clamping
 	tOutput = math.Min(tOutput, state.countMax)
