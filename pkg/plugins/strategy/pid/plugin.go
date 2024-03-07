@@ -113,6 +113,7 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 	maps.Copy(c, s.config)
 	maps.Copy(c, config)
 
+	s.logger.Debug("creating new policy state", "id", id, "config", c)
 	state = &policyState{}
 
 	// parse args
