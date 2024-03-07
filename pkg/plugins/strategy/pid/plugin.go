@@ -181,7 +181,8 @@ func (s *StrategyPlugin) newPolicy(id string, config map[string]string) (state *
 }
 
 func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sdk.ScalingCheckEvaluation, error) {
-	id := eval.Check.Group + "/" + eval.Check.Name
+	// we cannot get any per-policy unique ID, so we try our best to create one
+	id := fmt.Sprintf("%s/%d/%s/%s/%s", eval.Check.Source, utils.FNV64a(eval.Check.Query), eval.Check.Group, eval.Check.Name, eval.Check.Strategy.Name)
 	s.logger.Debug("Run() called", "id", id)
 	eval.Action.Direction = sdk.ScaleDirectionNone
 

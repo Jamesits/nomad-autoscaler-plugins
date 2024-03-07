@@ -1,6 +1,9 @@
 package utils
 
-import "strings"
+import (
+	"hash/fnv"
+	"strings"
+)
 
 func MatchAny(src []string, matchSet []string) bool {
 	for _, m := range matchSet {
@@ -36,4 +39,11 @@ func Abs(n int64) int64 {
 	// http://cavaliercoder.com/blog/optimized-abs-for-int64-in-go.html
 	y := n >> 63
 	return (n ^ y) - y
+}
+
+// FNV64a hashes using fnv32a algorithm
+func FNV64a(text string) uint64 {
+	algorithm := fnv.New64a()
+	_, _ = algorithm.Write([]byte(text))
+	return algorithm.Sum64()
 }
