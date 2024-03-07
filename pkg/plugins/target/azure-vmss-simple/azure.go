@@ -53,12 +53,6 @@ func (t *TargetPlugin) setupAzureClient(config map[string]string) error {
 
 	t.vmss = vmss
 
-	vmssVMs := compute.NewVirtualMachineScaleSetVMsClient(subscriptionID)
-	vmssVMs.Sender = autorest.CreateSender()
-	vmssVMs.Authorizer = authorizer
-
-	t.vmssVMs = vmssVMs
-
 	return nil
 }
 

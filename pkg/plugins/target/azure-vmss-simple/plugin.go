@@ -42,10 +42,9 @@ var _ target.Target = (*TargetPlugin)(nil)
 
 // TargetPlugin is the Azure VMSS implementation of the target.Target interface.
 type TargetPlugin struct {
-	config  map[string]string
-	logger  hclog.Logger
-	vmss    compute.VirtualMachineScaleSetsClient
-	vmssVMs compute.VirtualMachineScaleSetVMsClient
+	config map[string]string
+	logger hclog.Logger
+	vmss   compute.VirtualMachineScaleSetsClient
 }
 
 // NewAzureVMSSPlugin returns the Azure VMSS implementation of the target.Target
@@ -80,7 +79,7 @@ func (t *TargetPlugin) Scale(action sdk.ScalingAction, config map[string]string)
 		return nil
 	}
 
-	// We cannot scale an Scale Set without knowing the resource group and name.
+	// We cannot scale a Scale Set without knowing the resource group and name.
 	resourceGroup, ok := config[configKeyResoureGroup]
 	if !ok {
 		return fmt.Errorf("required config param %s not found", configKeyResoureGroup)
