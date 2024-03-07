@@ -63,3 +63,4 @@ Notes:
 - Default values are shown in the example
 - The quantification process may cause actual output value to be slightly out of bound by 1
 - The time interval is not controlled by us and can have large jitters
+- Please specify different *check* names globally; otherwise history data might screw up
