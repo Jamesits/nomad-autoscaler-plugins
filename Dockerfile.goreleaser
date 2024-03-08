@@ -1,12 +1,11 @@
 FROM golang:1.21-bookworm AS nomad-autoscaler-builder
 RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.2 \
     && cd nomad-autoscaler \
-    && go get ./... \
-    && go build .
+    && make pkg/linux_amd64/nomad-autoscaler
 
 FROM debian:bookworm-slim
 RUN mkdir -p /usr/lib/nomad-autoscaler/plugins
-COPY --from=nomad-autoscaler-builder /go/nomad-autoscaler/nomad-autoscaler /usr/bin/
+COPY --from=nomad-autoscaler-builder /go/nomad-autoscaler/pkg/linux_amd64/nomad-autoscaler /usr/bin/
 COPY *.deb /tmp
 RUN apt-get update -y \
     && dpkg -i /tmp/*.deb \
