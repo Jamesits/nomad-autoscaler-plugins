@@ -73,7 +73,6 @@ nfpms:
       - "apk"
       - "deb"
       - "rpm"
-      - "termux.deb"
       - "archlinux"
     recommends:
       - "nomad-autoscaler"

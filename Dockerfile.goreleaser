@@ -7,5 +7,9 @@ RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.2 \
 FROM debian:bookworm-slim
 RUN mkdir -p /usr/lib/nomad-autoscaler/plugins
 COPY --from=nomad-autoscaler-builder /go/nomad-autoscaler/nomad-autoscaler /usr/bin/
-COPY . /usr/lib/nomad-autoscaler/plugins/
-CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins" ]
+COPY *.deb /tmp
+RUN apt-get update -y \
+    && dpkg -i /tmp/*.deb \
+    && apt-get install -fy \
+    && rm -rf /var/lib/apt/lists/* /tmp/*.deb
+CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins", "-config=/etc/nomad-autoscaler/nomad-autoscaler.conf", "-config=/etc/nomad-autoscaler/conf.d", "-policy-dir=/etc/nomad-autoscaler/policy.d" ]
