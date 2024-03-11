@@ -11,4 +11,4 @@ RUN apt-get update -y \
     && dpkg -i /tmp/*.deb \
     && apt-get install -fy \
     && rm -rf /var/lib/apt/lists/* /tmp/*.deb
-CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins", "-config=/etc/nomad-autoscaler/nomad-autoscaler.conf", "-config=/etc/nomad-autoscaler/conf.d", "-policy-dir=/etc/nomad-autoscaler/policy.d" ]
+CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins", "-config=/etc/nomad-autoscaler/nomad-autoscaler.hcl", "-config=/etc/nomad-autoscaler/conf.d", "-policy-dir=/etc/nomad-autoscaler/policy.d" ]
