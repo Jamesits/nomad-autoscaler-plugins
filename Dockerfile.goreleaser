@@ -1,5 +1,5 @@
 FROM golang:1.21-bookworm AS nomad-autoscaler-builder
-RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.2 \
+RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.3 \
     && cd nomad-autoscaler \
     && make pkg/linux_amd64/nomad-autoscaler
 
@@ -9,6 +9,6 @@ COPY --from=nomad-autoscaler-builder /go/nomad-autoscaler/pkg/linux_amd64/nomad-
 COPY *.deb /tmp
 RUN apt-get update -y \
     && dpkg -i /tmp/*.deb \
-    && apt-get install -fy \
+    && apt-get install -fy ca-certificates \
     && rm -rf /var/lib/apt/lists/* /tmp/*.deb
 CMD [ "nomad-autoscaler", "agent", "-plugin-dir=/usr/lib/nomad-autoscaler/plugins", "-config=/etc/nomad-autoscaler/nomad-autoscaler.hcl", "-config=/etc/nomad-autoscaler/conf.d", "-policy-dir=/etc/nomad-autoscaler/policy.d" ]
