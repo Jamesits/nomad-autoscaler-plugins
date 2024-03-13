@@ -1,0 +1,3 @@
+[submodule "contrib/nomad-autoscaler"]
+	path = contrib/nomad-autoscaler
+	url = https://github.com/hashicorp/nomad-autoscaler.git

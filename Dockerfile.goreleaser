@@ -1,6 +1,6 @@
 FROM golang:1.21-bookworm AS nomad-autoscaler-builder
-RUN git clone https://github.com/hashicorp/nomad-autoscaler -b v0.4.3 \
-    && cd nomad-autoscaler \
+COPY --chown=0:0 contrib/nomad-autoscaler nomad-autoscaler
+RUN cd nomad-autoscaler \
     && make pkg/linux_amd64/nomad-autoscaler
 
 FROM debian:bookworm-slim
