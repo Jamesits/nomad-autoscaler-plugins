@@ -84,6 +84,8 @@ dockers:
     goarch: amd64
     image_templates:
       - "jamesits/nomad-autoscaler-plugins:latest"
+    extra_files:
+      - contrib/nomad-autoscaler
     skip_push: true
     dockerfile: "Dockerfile.goreleaser"
 
