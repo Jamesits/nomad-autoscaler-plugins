@@ -212,6 +212,10 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	integral := state.integral + proportional*dt
 	derivative := (proportional - state.previousError) / dt
 	rawOutput := state.kp*proportional + state.ki*integral + state.kd*derivative
+	if math.IsNaN(rawOutput) {
+		s.logger.Debug("rawOutput capped to 0 from NaN")
+		rawOutput = 0
+	}
 
 	// save internal state
 	state.integral = integral
