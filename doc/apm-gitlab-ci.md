@@ -16,7 +16,7 @@ apm "gitlab-ci" {
     graphql_endpoint = "https://gitlab.example.com/api/graphql"
     # Required: an access token, must have admin access
     token = "glpat-***"
-    
+
     # optional: how much jobs to query
     query_job_limit = "200",
     # optional: reports time series data in which frequency back to nomad-autoscaler
@@ -26,6 +26,8 @@ apm "gitlab-ci" {
   }
 }
 ```
+
+Token required scopes: `api, admin_mode`
 
 Tags format: a comma separated list of tags, where excluded tags have a `-` in the front. Spaces around the tag does not matter. e.g. `tag_a, tag_b, -exclusion_tag_c, ...`
 
