@@ -213,7 +213,7 @@ func (s *StrategyPlugin) Run(eval *sdk.ScalingCheckEvaluation, count int64) (*sd
 	derivative := (proportional - state.previousError) / dt
 	rawOutput := state.kp*proportional + state.ki*integral + state.kd*derivative
 	if math.IsNaN(rawOutput) {
-		s.logger.Debug("rawOutput capped to 0 from NaN")
+		s.logger.Warn("rawOutput capped to 0 from NaN", "p", proportional, "i", integral, "d", derivative)
 		rawOutput = 0
 	}
 
